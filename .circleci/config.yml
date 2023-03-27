@@ -2,14 +2,14 @@ version: 2.1
 executors:
   ubuntu_executor:
     docker:
-      - image: cimg/base:edge
+      - image: cimg/azure:2023.03.1
   machine:
     machine:
       image: ubuntu-2004:2023.02.1
 
 jobs:
   build:
-    executor: machine
+    executor: ubuntu_executor
     environment:
       BUILD_CONFIGURATION: Release
       WWWROOT_DIR: Tailspin.SpaceGame.Web/wwwroot
