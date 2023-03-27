@@ -42,14 +42,14 @@ jobs:
             
       - restore_cache:
           keys:
-            - v1-npm-cache-{{ checksum "package-lock.json" }}-1
+            - v1-npm-cache-{{ checksum "package-lock.json" }}-v2
 
       - run:
           name: Run npm ci
           command: npm ci
 
       - save_cache:
-          key: v1-npm-cache-{{ checksum "package-lock.json" }}-1
+          key: v1-npm-cache-{{ checksum "package-lock.json" }}-v2
           paths:
             - node_modules
 
