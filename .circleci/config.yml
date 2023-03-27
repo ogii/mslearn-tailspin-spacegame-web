@@ -51,7 +51,7 @@ jobs:
       - save_cache:
           key: v1-npm-cache-{{ checksum "package-lock.json" }}-1
           paths:
-            - ~/.npm
+            - node_modules
 
       - run:
           name: Compile Sass assets
