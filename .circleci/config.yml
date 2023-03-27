@@ -45,8 +45,8 @@ jobs:
             - v1-npm-cache-{{ checksum "package-lock.json" }}-v2
 
       - run:
-          name: Run npm ci
-          command: npm ci
+          name: Run npm install
+          command: npm install
 
       - save_cache:
           key: v1-npm-cache-{{ checksum "package-lock.json" }}-v2
