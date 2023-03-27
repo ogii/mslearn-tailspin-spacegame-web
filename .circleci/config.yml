@@ -20,7 +20,7 @@ jobs:
       - run:
           name: Install .NET SDK
           command: |
-            curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version $DOTNET_SDK_VERSION --install-dir /usr/local/share/dotnet
+            sudo curl -sSL https://dot.net/v1/dotnet-install.sh | sudo bash /dev/stdin --version $DOTNET_SDK_VERSION --install-dir /usr/local/share/dotnet
             echo 'export PATH="/usr/local/share/dotnet:$PATH"' >> $BASH_ENV
 
       - restore_cache:
