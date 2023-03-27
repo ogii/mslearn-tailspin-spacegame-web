@@ -1,0 +1,73 @@
+version: 2.1
+executors:
+  ubuntu_executor:
+    docker:
+      - image: cimg/base:edge
+  machine:
+    machine:
+      image: ubuntu-2004:2023.02.1
+
+jobs:
+  build:
+    executor: machine
+    environment:
+      BUILD_CONFIGURATION: Release
+      WWWROOT_DIR: Tailspin.SpaceGame.Web/wwwroot
+      DOTNET_SDK_VERSION: 6.x
+    steps:
+      - checkout
+
+      - run:
+          name: Install .NET SDK
+          command: |
+            curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version $DOTNET_SDK_VERSION --install-dir /usr/local/share/dotnet
+            echo 'export PATH="/usr/local/share/dotnet:$PATH"' >> $BASH_ENV
+
+      - restore_cache:
+          keys:
+            - v1-npm-cache-{{ checksum "package-lock.json" }}
+
+      - run:
+          name: Run npm install
+          command: npm ci
+
+      - save_cache:
+          key: v1-npm-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+
+      - run:
+          name: Compile Sass assets
+          command: ./node_modules/.bin/node-sass $WWWROOT_DIR --output $WWWROOT_DIR
+
+      - run:
+          name: Run gulp tasks
+          command: npx gulp
+
+      - run:
+          name: Write build info
+          command: echo "${CIRCLE_PROJECT_REPONAME}, ${CIRCLE_BUILD_NUM}, ${CIRCLE_SHA1}" > $WWWROOT_DIR/buildinfo.txt
+
+      - run:
+          name: Restore project dependencies
+          command: dotnet restore
+
+      - run:
+          name: Build the project
+          command: dotnet build --no-restore --configuration $BUILD_CONFIGURATION
+
+      - run:
+          name: Publish the project
+          command: |
+            dotnet publish --no-build --configuration $BUILD_CONFIGURATION --output ./artifacts/$BUILD_CONFIGURATION
+            cd ./artifacts/$BUILD_CONFIGURATION
+            zip -r ../${BUILD_CONFIGURATION}.zip .
+
+      - store_artifacts:
+          path: ./artifacts
+          destination: drop
+
+workflows:
+  build-deploy:
+    jobs:
+      - build
