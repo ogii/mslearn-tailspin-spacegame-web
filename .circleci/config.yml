@@ -13,15 +13,16 @@ jobs:
     environment:
       BUILD_CONFIGURATION: Release
       WWWROOT_DIR: Tailspin.SpaceGame.Web/wwwroot
-      DOTNET_SDK_VERSION: 6.x
+      DOTNET_SDK_VERSION: 6.0
     steps:
       - checkout
 
       - run:
           name: Install .NET SDK
           command: |
-            sudo curl -sSL https://dot.net/v1/dotnet-install.sh | sudo bash /dev/stdin --version $DOTNET_SDK_VERSION --install-dir /usr/local/share/dotnet
-            echo 'export PATH="/usr/local/share/dotnet:$PATH"' >> $BASH_ENV
+            wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+            sudo chmod +x ./dotnet-install.sh
+            ./dotnet-install.sh --channel 6.0
 
       - restore_cache:
           keys:
