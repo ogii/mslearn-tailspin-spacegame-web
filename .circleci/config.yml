@@ -20,10 +20,13 @@ jobs:
       - run:
           name: Install .NET SDK
           command: |
-            wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
-            sudo chmod +x ./dotnet-install.sh
-            ./dotnet-install.sh --channel 6.0
-
+            #wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+            #sudo chmod +x ./dotnet-install.sh
+            #./dotnet-install.sh --channel 6.0
+            sudo apt-get update
+            sudo apt-get install -y apt-transport-https && \
+            sudo apt-get update && \
+            sudo apt-get install -y dotnet-sdk-6.0
       - restore_cache:
           keys:
             - v1-npm-cache-{{ checksum "package-lock.json" }}
