@@ -33,7 +33,7 @@ jobs:
 
       - run:
           name: Run npm install
-          command: npm ci
+          command: npm install
 
       - save_cache:
           key: v1-npm-cache-{{ checksum "package-lock.json" }}
