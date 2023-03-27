@@ -9,7 +9,7 @@ executors:
 
 jobs:
   build:
-    executor: ubuntu_executor
+    executor: machine #ubuntu_executor
     environment:
       BUILD_CONFIGURATION: Release
       WWWROOT_DIR: Tailspin.SpaceGame.Web/wwwroot
@@ -22,21 +22,22 @@ jobs:
           command: |
             #wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
             #sudo chmod +x ./dotnet-install.sh
-            #./dotnet-install.sh --channel 6.0
+            #./dotnet-install.sh --channel $DOTNET_SDK_VERSION
             sudo apt-get update
             sudo apt-get install -y apt-transport-https && \
             sudo apt-get update && \
             sudo apt-get install -y dotnet-sdk-6.0
+            
       - restore_cache:
           keys:
-            - v1-npm-cache-{{ checksum "package-lock.json" }}
+            - v1-npm-cache-{{ checksum "package-lock.json" }-1}
 
       - run:
           name: Run npm install
           command: npm install
 
       - save_cache:
-          key: v1-npm-cache-{{ checksum "package-lock.json" }}
+          key: v1-npm-cache-{{ checksum "package-lock.json" }-1}
           paths:
             - ~/.npm
 
